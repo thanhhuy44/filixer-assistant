@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript",
+    "plugin:tailwindcss/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    // disable or off
+    "prettier/prettier": 0,
+
+    // warn
+    "simple-import-sort/imports": "warn",
+    "simple-import-sort/exports": "warn",
+
+    // error
+    "@typescript-eslint/no-unused-vars": "error"
+  }
+}
