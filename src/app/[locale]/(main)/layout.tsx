@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { Footer, Header } from "@/components/layout";
+import { Header } from "@/components/layout";
 import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
@@ -9,10 +9,9 @@ function MainLayout({ children }: { children: ReactNode }) {
     <>
       <SidebarProvider>
         <AppSidebar />
-        <div className="flex-1">
+        <div className="flex h-dvh flex-1 flex-col">
           <Header />
-          <div className="min-h-dvh">{children}</div>
-          <Footer />
+          <div className="flex-1">{children}</div>
         </div>
       </SidebarProvider>
     </>

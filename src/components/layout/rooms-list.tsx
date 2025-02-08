@@ -18,6 +18,7 @@ function RoomsList() {
         return await RoomsApi.getAll({
           page: pageParam,
           limit: 50,
+          sortBy: "updatedAt",
         });
       } catch (e) {
         console.error(e);
@@ -43,7 +44,6 @@ function RoomsList() {
         : undefined;
     },
   });
-  console.log("🚀 ~ RoomsList ~ rooms:", rooms.data);
 
   return (
     <ScrollArea className="h-full">

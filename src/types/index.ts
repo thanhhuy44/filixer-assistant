@@ -45,3 +45,13 @@ export type AssistantRoom = {
   createdAt: string,
   updatedAt: string
 }
+
+export type AssistantMessage = {
+  _id: string,
+  room: string,
+  content: string,
+  role: string,
+  isDeleted: boolean,
+  createdAt: string,
+  updatedAt: string
+}
