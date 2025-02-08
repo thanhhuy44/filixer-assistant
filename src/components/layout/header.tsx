@@ -3,8 +3,8 @@
 import { Loader2, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
+import { getFallbackName } from "@/lib/helpers";
 import { Link } from "@/navigation";
-import { getFallbackName } from "@/utils/helpers";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";

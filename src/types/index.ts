@@ -4,7 +4,19 @@ export type ApiResponse = {
   statusCode: number;
   message: string;
   data: any;
+  pagination?: Pagination
 };
+
+export type QueryParams = {
+  [key: string] : string | number | boolean | undefined
+}
+
+export type Pagination = {
+  page: number,
+  limit: number,
+  total: number,
+  totalPages: number
+}
 
 export type MediaAsset = {
   _id: string,
@@ -25,3 +37,11 @@ export type User = {
   createdAt: string,
   updatedAt: string,
 };
+
+export type AssistantRoom = {
+  _id: string,
+  name: string,
+  user: string,
+  createdAt: string,
+  updatedAt: string
+}
