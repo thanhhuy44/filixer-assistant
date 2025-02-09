@@ -1,16 +1,19 @@
 "use client";
 
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 import { RoomsApi } from "@/api/rooms";
 import { flatInfiniteQueryResponse, sortListByTime } from "@/lib/helpers";
 import { Link } from "@/navigation";
+import useAssistant from "@/store/assistant";
 import { ApiResponse, AssistantRoom, Pagination } from "@/types";
 
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 
 function RoomsList() {
+  const { status } = useAssistant();
   const rooms = useInfiniteQuery({
     queryKey: ["rooms-infinitie"],
     queryFn: async ({ pageParam }) => {
@@ -44,6 +47,10 @@ function RoomsList() {
         : undefined;
     },
   });
+
+  useEffect(() => {
+    rooms.refetch();
+  }, [status]);
 
   return (
     <ScrollArea className="h-full">

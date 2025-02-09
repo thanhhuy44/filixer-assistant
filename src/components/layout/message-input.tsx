@@ -3,6 +3,8 @@
 import { Send } from "lucide-react";
 import { useState } from "react";
 
+import useAssistant from "@/store/assistant";
+
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
@@ -12,9 +14,11 @@ interface Props {
 
 function MessageInput({ onSubmit }: Props) {
   const [message, setMessage] = useState("");
+  const { status } = useAssistant();
+  const isDisable = status !== "NONE";
 
   const onFinish = () => {
-    if (onSubmit && message.trim()) {
+    if (onSubmit && message.trim() && !isDisable) {
       onSubmit(message.trim());
       setMessage("");
     }
@@ -40,6 +44,7 @@ function MessageInput({ onSubmit }: Props) {
           rows={2}
         />
         <Button
+          disabled={status !== "NONE"}
           size="icon"
           onClick={() => {
             onFinish();

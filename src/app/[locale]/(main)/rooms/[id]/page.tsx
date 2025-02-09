@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
@@ -7,8 +6,9 @@ import { useEffect } from "react";
 import { RoomsApi } from "@/api/rooms";
 import { MessageInput, MessageList } from "@/components/layout";
 import { flatInfiniteQueryResponse } from "@/lib/helpers";
-import useDraftMessage from "@/store/assistant";
+import useAssistant from "@/store/assistant";
 import { ApiResponse, Pagination } from "@/types";
+import { fetchStream } from "@/utils/stream-response";
 
 function Page({
   params,
@@ -18,7 +18,7 @@ function Page({
   };
 }) {
   const id = params.id;
-  const { setDraftMesage } = useDraftMessage() as any;
+  const { setDraftMesage, setStatus, setCurrentRoom } = useAssistant();
 
   const messages = useInfiniteQuery({
     queryKey: ["room-messages"],
@@ -32,6 +32,7 @@ function Page({
         });
       } catch (e) {
         console.error(e);
+        setCurrentRoom(undefined);
         throw new Error("Failed to fetch messages");
       }
     },
@@ -56,9 +57,27 @@ function Page({
 
   const onSubmit = async (content: string) => {
     try {
-      const response = await RoomsApi.sendMessage({ room: id, content });
-      console.log("🚀 ~ onSubmit ~ response:", response);
+      await RoomsApi.sendMessage({ room: id, content });
       await messages.refetch();
+      setStatus("LOADING");
+      await fetchStream(
+        id,
+        (value) => {
+          setStatus("DRAFT");
+          setDraftMesage({
+            room: id,
+            content: value,
+          });
+        },
+        async () => {
+          setDraftMesage({
+            room: "",
+            content: "",
+          });
+          setStatus("NONE");
+          await messages.refetch();
+        }
+      );
     } catch (error) {
       console.error("🚀 ~ onSubmit ~ error:", error);
       throw new Error("Failed to send message!");
@@ -66,37 +85,8 @@ function Page({
   };
 
   useEffect(() => {
-    const fetchStream = async () => {
-      const response = await fetch(
-        "http://localhost:3030/api/assistants/rooms/67a5b9169d7684168c7582d6/stream",
-        {
-          headers: {
-            authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzQ4M2E1Mjc2YmQ0ZThjNjE1MjQzOWQiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczODk5NTM4NywiZXhwIjoxNzM5MTY4MTg3fQ.AXSe_UYFEe5hFSiFxg3qskDQhMjImkr2O84NyWfihBU",
-          },
-        }
-      );
-
-      if (!response.body) return;
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let accumulatedText = "";
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        accumulatedText += decoder.decode(value, { stream: true });
-        setDraftMesage({
-          room: id,
-          content: accumulatedText,
-        });
-      }
-    };
-
-    fetchStream();
-  }, []);
+    setCurrentRoom(id);
+  }, [id]);
 
   return (
     <div className="flex h-full flex-col gap-y-4 py-5">
