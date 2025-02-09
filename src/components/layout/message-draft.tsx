@@ -8,19 +8,17 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
-import { AssistantMessage } from "@/types";
+import useDraftMessage from "@/store/assistant";
 
-function Message({ content, role }: AssistantMessage) {
+function MessageDraft() {
   const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>;
 
+  const { draftMessage } = useDraftMessage() as any;
+  console.log("🚀 ~ MessageDraft ~ draftMessage:", draftMessage);
+
   return (
-    <div className={cn("flex", role === "user" ? "justify-end" : "")}>
-      <div
-        className={cn(
-          "w-fit py-2 px-4 rounded-xl overflow-hidden",
-          role === "user" ? "bg-secondary max-w-3xl" : ""
-        )}
-      >
+    <div className={cn("flex")}>
+      <div className={cn("w-fit py-2 px-4 rounded-xl overflow-hidden")}>
         <Markdown
           className="markdown-container"
           remarkPlugins={[remarkGfm]}
@@ -46,11 +44,11 @@ function Message({ content, role }: AssistantMessage) {
             },
           }}
         >
-          {content}
+          {draftMessage.content}
         </Markdown>
       </div>
     </div>
   );
 }
 
-export default Message;
+export default MessageDraft;

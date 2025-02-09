@@ -104,3 +104,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.markdown-container hr {
+  @apply my-1
+}
