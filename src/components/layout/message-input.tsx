@@ -28,6 +28,7 @@ function MessageInput({ onSubmit }: Props) {
     <div className="container">
       <div className="flex items-start gap-x-3">
         <Textarea
+          placeholder="Send question to Filixer Assistant..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className="flex-1 resize-y"
@@ -50,7 +51,7 @@ function MessageInput({ onSubmit }: Props) {
             onFinish();
           }}
         >
-          <Send />
+          <Send fontWeight={700} />
         </Button>
       </div>
     </div>

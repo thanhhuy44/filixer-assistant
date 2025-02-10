@@ -3,7 +3,8 @@ import { getServerAuthSession } from "./actions";
 export const fetchStream = async (
   room: string,
   onStream?: (value: string) => void,
-  onDone?: () => void
+  onDone?: () => void,
+  onError?: () => void
 ) => {
   const session = await getServerAuthSession();
   try {
@@ -38,6 +39,10 @@ export const fetchStream = async (
     }
   } catch (error) {
     console.error("🚀 ~ fetchStream error:", error);
-    throw new Error("Failed to fetch stream");
+    if (onError) {
+      onError();
+    } else {
+      throw new Error("Failed to fetch stream");
+    }
   }
 };

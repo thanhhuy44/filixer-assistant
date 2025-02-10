@@ -1,3 +1,7 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+
 import {
   Sidebar,
   SidebarContent,
@@ -5,6 +9,7 @@ import {
   SidebarGroup,
   SidebarHeader,
   SidebarSeparator,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "@/navigation";
 
@@ -12,20 +17,32 @@ import { Button } from "../ui/button";
 import RoomsList from "./rooms-list";
 
 function AppSidebar() {
+  const { status } = useSession();
+  const { openMobile, setOpenMobile } = useSidebar();
   return (
     <Sidebar>
-      <SidebarHeader>Filixer Assistant</SidebarHeader>
+      <SidebarHeader className="py-5 text-center text-xl font-bold">
+        Filixer Assistant
+      </SidebarHeader>
       <SidebarSeparator />
-      <SidebarContent>
+      <SidebarContent className="gap-0 overflow-hidden">
         <SidebarGroup>
-          <Link href="/rooms/new">
-            <Button variant="outline" className="w-full">
-              New Chat
-            </Button>
-          </Link>
+          {status === "authenticated" ? (
+            <Link href="/rooms/new" onClick={() => setOpenMobile(!openMobile)}>
+              <Button variant="outline" className="w-full">
+                New Chat
+              </Button>
+            </Link>
+          ) : null}
         </SidebarGroup>
-        <SidebarGroup className="h-full">
-          <RoomsList />
+        <SidebarGroup className="flex-1 overflow-hidden">
+          {status === "authenticated" ? (
+            <RoomsList />
+          ) : status === "loading" ? (
+            ""
+          ) : (
+            ""
+          )}
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter />

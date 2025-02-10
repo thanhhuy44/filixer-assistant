@@ -1,11 +1,14 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 "use client";
 
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
+import { useCallback, useEffect } from "react";
 
 import { RoomsApi } from "@/api/rooms";
 import { MessageInput, MessageList } from "@/components/layout";
 import { flatInfiniteQueryResponse } from "@/lib/helpers";
+import { useRouter } from "@/navigation";
 import useAssistant from "@/store/assistant";
 import { ApiResponse, Pagination } from "@/types";
 import { fetchStream } from "@/utils/stream-response";
@@ -18,7 +21,9 @@ function Page({
   };
 }) {
   const id = params.id;
-  const { setDraftMesage, setStatus, setCurrentRoom } = useAssistant();
+  const isNew = id === "new";
+  const { replace } = useRouter();
+  const { status, setDraftMesage, setStatus, setCurrentRoom } = useAssistant();
 
   const messages = useInfiniteQuery({
     queryKey: ["room-messages"],
@@ -53,57 +58,90 @@ function Page({
           : undefined
         : undefined;
     },
+    enabled: isNew || !id ? false : true,
+    refetchOnMount: true,
   });
 
-  const onSubmit = async (content: string) => {
-    try {
-      await RoomsApi.sendMessage({ room: id, content });
-      await messages.refetch();
-      setStatus("LOADING");
-      await fetchStream(
-        id,
-        (value) => {
-          setStatus("DRAFT");
-          setDraftMesage({
-            room: id,
-            content: value,
-          });
-        },
-        async () => {
-          setDraftMesage({
-            room: "",
-            content: "",
-          });
-          setStatus("NONE");
+  const onSubmit = useCallback(
+    async (content: string) => {
+      try {
+        const response = await RoomsApi.sendMessage({
+          room: isNew ? undefined : id,
+          content,
+        });
+        const room = response.data.room;
+        if (isNew) {
+          replace("/rooms/" + room);
+        } else {
           await messages.refetch();
         }
-      );
-    } catch (error) {
-      console.error("🚀 ~ onSubmit ~ error:", error);
-      throw new Error("Failed to send message!");
-    }
-  };
+        setStatus("LOADING");
+        setCurrentRoom(room);
+        setDraftMesage({
+          room,
+          content: "",
+        });
+        await fetchStream(
+          room,
+          (value) => {
+            setStatus("DRAFT");
+            setDraftMesage({
+              room,
+              content: value,
+            });
+          },
+          async () => {
+            setDraftMesage({
+              room: "",
+              content: "",
+            });
+            setStatus("NONE");
+            if (!isNew) {
+              await messages.refetch();
+            }
+          }
+        );
+      } catch (error) {
+        console.error("🚀 ~ onSubmit ~ error:", error);
+        throw new Error("Failed to send message!");
+      }
+    },
+    [id]
+  );
 
   useEffect(() => {
     setCurrentRoom(id);
   }, [id]);
 
+  useEffect(() => {
+    if (!isNew) {
+      messages.refetch();
+    }
+  }, [status, isNew]);
+
   return (
     <div className="flex h-full flex-col gap-y-4 py-5">
       <div className="relative flex-1">
-        <div className="absolute inset-0 size-full">
-          {messages.isLoading ? (
-            <div className="container">loading...</div>
-          ) : (
-            <MessageList
-              messages={
-                flatInfiniteQueryResponse(
-                  messages.data as InfiniteData<ApiResponse>
-                ) ?? []
+        {messages.isLoading ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Loader2 className="size-10 animate-spin" />
+          </div>
+        ) : isNew ? (
+          <></>
+        ) : (
+          <MessageList
+            messages={
+              flatInfiniteQueryResponse(
+                messages.data as InfiniteData<ApiResponse>
+              ) ?? []
+            }
+            onScrollToTop={() => {
+              if (messages.hasNextPage) {
+                messages.fetchNextPage();
               }
-            />
-          )}
-        </div>
+            }}
+          />
+        )}
       </div>
       <MessageInput onSubmit={onSubmit} />
     </div>

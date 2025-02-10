@@ -1,18 +1,17 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
-type  AssistantStatus = "LOADING" | "DRAFT" | "NONE"
+type AssistantStatus = "LOADING" | "DRAFT" | "NONE";
 
 interface State {
-  status: AssistantStatus,
-  currentRoom: string | undefined,
+  status: AssistantStatus;
+  currentRoom: string | "new" | undefined;
   draftMessage: {
-    room: string,
-    content: string
-  },
+    room: string;
+    content: string;
+  };
   setStatus: (payload: AssistantStatus) => void;
   setCurrentRoom: (payload: string | undefined) => void;
-  setDraftMesage: (payload: {room: string, content: string}) => void;
-
+  setDraftMesage: (payload: { room: string; content: string }) => void;
 }
 
 const useAssistant = create<State>((set) => ({
@@ -20,11 +19,13 @@ const useAssistant = create<State>((set) => ({
   currentRoom: "",
   draftMessage: {
     room: "",
-    content: ""
+    content: "",
   },
   setStatus: (payload: AssistantStatus) => set({ status: payload }),
-  setCurrentRoom: (payload: string | undefined) => set({currentRoom: payload}),
-  setDraftMesage: (payload: {room: string, content: string}) => set({ draftMessage: payload }),
-}))
+  setCurrentRoom: (payload: string | undefined) =>
+    set({ currentRoom: payload }),
+  setDraftMesage: (payload: { room: string; content: string }) =>
+    set({ draftMessage: payload }),
+}));
 
-export default useAssistant
+export default useAssistant;
