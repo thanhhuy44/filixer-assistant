@@ -99,6 +99,13 @@ function Page({
             if (!isNew) {
               await messages.refetch();
             }
+          },
+          () => {
+            setDraftMesage({
+              room: "",
+              content: "",
+            });
+            setStatus("NONE");
           }
         );
       } catch (error) {
