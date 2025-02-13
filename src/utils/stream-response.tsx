@@ -9,7 +9,7 @@ export const fetchStream = async (
   const session = await getServerAuthSession();
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/assistants/rooms/${room}/stream`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/assistants/rooms/${room}/gemini-stream`,
       {
         headers: {
           authorization: "Bearer " + session?.accessToken,

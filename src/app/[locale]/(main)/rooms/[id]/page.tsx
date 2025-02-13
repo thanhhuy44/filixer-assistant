@@ -11,7 +11,7 @@ import { flatInfiniteQueryResponse } from "@/lib/helpers";
 import { useRouter } from "@/navigation";
 import useAssistant from "@/store/assistant";
 import { ApiResponse, Pagination } from "@/types";
-import { fetchStream } from "@/utils/stream-response";
+// import { fetchStream } from "@/utils/stream-response";
 
 function Page({
   params,
@@ -23,7 +23,8 @@ function Page({
   const id = params.id;
   const isNew = id === "new";
   const { replace } = useRouter();
-  const { status, setDraftMesage, setStatus, setCurrentRoom } = useAssistant();
+  const { status, setDraftMesage, setStatus, setCurrentRoom, stream } =
+    useAssistant();
 
   const messages = useInfiniteQuery({
     queryKey: ["room-messages"],
@@ -81,16 +82,16 @@ function Page({
           room,
           content: "",
         });
-        await fetchStream(
+        await stream({
           room,
-          (value) => {
+          onStream: (value) => {
             setStatus("DRAFT");
             setDraftMesage({
               room,
               content: value,
             });
           },
-          async () => {
+          onDone: async () => {
             if (!isNew) {
               await messages.refetch();
             }
@@ -99,8 +100,8 @@ function Page({
               content: "",
             });
             setStatus("NONE");
-          }
-        );
+          },
+        });
       } catch (error) {
         console.error("🚀 ~ onSubmit ~ error:", error);
         throw new Error("Failed to send message!");
