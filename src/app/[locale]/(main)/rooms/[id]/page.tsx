@@ -91,14 +91,14 @@ function Page({
             });
           },
           async () => {
+            if (!isNew) {
+              await messages.refetch();
+            }
             setDraftMesage({
               room: "",
               content: "",
             });
             setStatus("NONE");
-            if (!isNew) {
-              await messages.refetch();
-            }
           }
         );
       } catch (error) {

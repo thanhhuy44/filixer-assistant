@@ -20,8 +20,6 @@
   }
 }
 
-
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -94,8 +92,6 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -105,7 +101,16 @@
   }
 }
 
-
 .markdown-container hr {
-  @apply my-1
+  @apply my-3;
+}
+
+.markdown-container td,
+.markdown-container th {
+  @apply py-2 px-3 border;
+}
+
+.markdown-container ol,
+.markdown-container ul {
+  @apply list-disc pl-4;
 }

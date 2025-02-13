@@ -8,6 +8,7 @@ import { AssistantMessage } from "@/types";
 import Message from "./message";
 import MessageDraft from "./message-draft";
 import Scroll from "./scroll";
+import ToBottomButton from "./to-bottom-button";
 
 interface Props {
   messages: AssistantMessage[];
@@ -44,6 +45,7 @@ function MessageListWrap({ messages, ...props }: Props) {
       scrollViewClassName="message-list"
     >
       <MessageList messages={messages} {...props} />
+      <ToBottomButton />
     </Scroll>
   );
 }

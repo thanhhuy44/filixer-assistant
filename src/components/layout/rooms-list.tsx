@@ -98,7 +98,7 @@ function RoomsListContent() {
       <div className="size-full space-y-4">
         {sortListByTime(
           flatInfiniteQueryResponse(rooms.data as InfiniteData<ApiResponse>),
-          "createdAt"
+          "updatedAt"
         ).map((item) =>
           item.data.length ? (
             <div key={item.title} className="space-y-2">
