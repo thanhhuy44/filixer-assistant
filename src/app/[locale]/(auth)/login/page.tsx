@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Link } from "@/navigation";
 import { LoginBody } from "@/types/auth";
 
 function Page() {
@@ -68,6 +69,14 @@ function Page() {
                   </FormItem>
                 )}
               />
+              <div>
+                <p>
+                  {"Haven't account? "}
+                  <Link href="/register" className="font-bold">
+                    Register
+                  </Link>
+                </p>
+              </div>
             </CardContent>
             <CardFooter className="justify-end">
               <Button type="submit">Login</Button>

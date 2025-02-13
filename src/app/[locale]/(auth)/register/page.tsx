@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "@/navigation";
+import { Link, useRouter } from "@/navigation";
 import { ApiResponse } from "@/types";
 import { RegisterBody } from "@/types/auth";
 import { registerSchema } from "@/utils/zod-schemas";
@@ -119,6 +119,14 @@ function Page() {
                   </FormItem>
                 )}
               />
+              <div>
+                <p>
+                  {"Have account yet? "}
+                  <Link href="/login" className="font-bold">
+                    Login
+                  </Link>
+                </p>
+              </div>
             </CardContent>
             <CardFooter className="justify-end">
               <Button disabled={form.formState.isSubmitting} type="submit">

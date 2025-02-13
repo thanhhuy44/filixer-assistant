@@ -10,6 +10,9 @@ export const RoomsApi = {
   getAll: async (params?: QueryParams): Promise<ApiResponse> => {
     return await request("/assistants/rooms", { params });
   },
+  getOne: async (id: string, params?: QueryParams): Promise<ApiResponse> => {
+    return await request("/assistants/rooms/" + id, { params });
+  },
   getMessages: async (
     room: string,
     params?: QueryParams
