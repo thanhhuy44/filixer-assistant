@@ -6,7 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import { getFallbackName } from "@/lib/helpers";
 import { useRouter } from "@/navigation";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
@@ -19,12 +19,12 @@ function UserDropdown() {
       <Popover>
         <PopoverTrigger>
           <Avatar className="size-10">
-            <AvatarImage
+            {/* <AvatarImage
               src={user?.avatar.url}
               alt={user?.fullName}
               className=""
-            />
-            <AvatarFallback>
+            /> */}
+            <AvatarFallback className="font-semibold">
               {getFallbackName(user?.fullName ?? "")}
             </AvatarFallback>
           </Avatar>
